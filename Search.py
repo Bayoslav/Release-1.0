@@ -7,8 +7,10 @@ position = 0
 skip = 0
 count = 0
 numreq = 1
+lista=[]
+f = open('jsondata.json','a')
 while(1):
-    time.sleep(5)
+
     position += count
     skip += count
 
@@ -67,7 +69,7 @@ while(1):
     numreq += 1
     #print(cont)
     rows = (cont.get('Rows'))
-    print(rows)
+    #print(rows)
     count = (cont.get('Count'))
     print(count)
     #print(type(rows))
@@ -77,6 +79,7 @@ while(1):
     soup = bs.BeautifulSoup(rows,'lxml')
     #print(soup)
     i=0
+
     for ad in soup.find_all('div', class_='a ax'):
         i+=1
         url = (ad.find('a').get('href'))
@@ -90,8 +93,30 @@ while(1):
         print(street)
         print(pcode)
         print("TITLE: " + title + "\nURL: " + url + "\n Adress: " + street + " " + pcode + "\nEquipment: " + str(equipment))
-        print(i)
+        equipment = [item[1:len(item)] for item in equipment]
+        print(equipment)
 
+
+
+        jsondict = {
+            "name" : title,
+            "address" : {
+                "street": street,
+                "city": "Winterthur",
+        		"zipcode":8400
+                },
+            "additionalFeatures" : {
+                "equipment" : {item : 'true' for item in equipment }
+            }
+
+        }
+        print(jsondict)
+
+        lista.append(jsondict)
+        print(i)
+jsonlista = json.dumps(lista)
+f.write(jsonlista)
+f.close()
 
 
     #print(unicoded)
